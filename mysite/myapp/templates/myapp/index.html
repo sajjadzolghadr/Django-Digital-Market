@@ -1,10 +1,73 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'myapp/base.html' %}
+{% load static %}
 
-</body>
-</html>
+{% block title %}Dashboard | Digital Marketplace{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+  <div class="col-12">
+    <div class="card card-shadow bg-primary text-white p-4" style="background: linear-gradient(135deg, #0d6efd, #0a58ca);">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h2 class="fw-bold"><i class="fas fa-rocket me-2"></i>Welcome to Dashboard</h2>
+          <p class="mb-0 opacity-75">Manage your sales, orders and products here.</p>
+        </div>
+        <i class="fas fa-store fa-3x opacity-50"></i>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 col-sm-6">
+    <div class="card card-shadow p-3 text-center">
+      <i class="fas fa-dollar-sign fa-2x text-success"></i>
+      <h5 class="mt-2">Total Sales</h5>
+      <h3 class="fw-bold">$12,450</h3>
+      <small class="text-muted">+15% this month</small>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card card-shadow p-3 text-center">
+      <i class="fas fa-shopping-cart fa-2x text-primary"></i>
+      <h5 class="mt-2">Orders</h5>
+      <h3 class="fw-bold">142</h3>
+      <small class="text-muted">+12 new</small>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card card-shadow p-3 text-center">
+      <i class="fas fa-box fa-2x text-warning"></i>
+      <h5 class="mt-2">Products</h5>
+      <h3 class="fw-bold">56</h3>
+      <small class="text-muted">active</small>
+    </div>
+  </div>
+  <div class="col-md-3 col-sm-6">
+    <div class="card card-shadow p-3 text-center">
+      <i class="fas fa-users fa-2x text-info"></i>
+      <h5 class="mt-2">Customers</h5>
+      <h3 class="fw-bold">389</h3>
+      <small class="text-muted">+18 this week</small>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card card-shadow p-4">
+      <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+      <ul class="list-group list-group-flush mt-3">
+        <li class="list-group-item d-flex justify-content-between">
+          <span><i class="fas fa-plus-circle text-success me-2"></i>New product "Django Course" added.</span>
+          <small class="text-muted">2 min ago</small>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span><i class="fas fa-check-circle text-primary me-2"></i>Order #1024 confirmed.</span>
+          <small class="text-muted">1 hour ago</small>
+        </li>
+        <li class="list-group-item d-flex justify-content-between">
+          <span><i class="fas fa-user-plus text-warning me-2"></i>New user registered.</span>
+          <small class="text-muted">3 hours ago</small>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
