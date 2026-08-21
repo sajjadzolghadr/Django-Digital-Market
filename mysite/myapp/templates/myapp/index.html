@@ -5,6 +5,7 @@
 
 {% block content %}
 <div class="row g-4">
+  <!-- Welcome Card -->
   <div class="col-12">
     <div class="card card-shadow bg-primary text-white p-4" style="background: linear-gradient(135deg, #0d6efd, #0a58ca);">
       <div class="d-flex justify-content-between align-items-center">
@@ -17,6 +18,7 @@
     </div>
   </div>
 
+  <!-- Stat Cards -->
   <div class="col-md-3 col-sm-6">
     <div class="card card-shadow p-3 text-center">
       <i class="fas fa-dollar-sign fa-2x text-success"></i>
@@ -37,8 +39,8 @@
     <div class="card card-shadow p-3 text-center">
       <i class="fas fa-box fa-2x text-warning"></i>
       <h5 class="mt-2">Products</h5>
-      <h3 class="fw-bold">56</h3>
-      <small class="text-muted">active</small>
+      <h3 class="fw-bold">{{ products.count }}</h3>
+      <small class="text-muted">total products</small>
     </div>
   </div>
   <div class="col-md-3 col-sm-6">
@@ -50,6 +52,39 @@
     </div>
   </div>
 
+  <!-- Products Section -->
+  <div class="col-12">
+    <div class="card card-shadow p-4">
+      <h5><i class="fas fa-box me-2"></i>Products</h5>
+      <div class="row g-3 mt-2">
+        {% for product in products %}
+        <div class="col-md-4 col-sm-6">
+          <div class="card h-100 card-shadow">
+            {% if product.file %}
+            <div class="text-center p-3 bg-light">
+              <i class="fas fa-file-alt fa-3x text-primary"></i>
+            </div>
+            {% endif %}
+            <div class="card-body">
+              <h6 class="card-title fw-bold">{{ product.name }}</h6>
+              <p class="card-text small text-muted">{{ product.description|truncatechars:60 }}</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span class="h5 text-success mb-0">${{ product.price }}</span>
+                <a href="#" class="btn btn-sm btn-primary"><i class="fas fa-shopping-cart"></i> Buy</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <p class="text-muted text-center">No products available.</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
   <div class="col-12">
     <div class="card card-shadow p-4">
       <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
