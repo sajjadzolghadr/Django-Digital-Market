@@ -8,3 +8,16 @@ class Product(models.Model):
     file = models.FileField(upload_to='uploads')
     def __str__(self):
         return self.name
+
+
+class OrderDetail(models.Model):
+    customer_email = models.EmailField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    amount = models.FloatField()
+    stripe_payment_id = models.CharField(max_length=100)
+    has_paid = models.BooleanField(default=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+    updated_on = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.customer_email
