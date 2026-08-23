@@ -1,4 +1,4 @@
-from django.shortcuts import render,get_object_or_404
+from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm
 from .models import Product,OrderDetail
 
@@ -23,5 +23,12 @@ def checkout(request,id):
     return render(request, 'myapp/checkout.html', {'order': order, 'product': product})
 
 def create_product(request):
-    form = ProductForm(request.POST or None)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = ProductForm()
+
     return render(request, 'myapp/create_product.html', {'form': form})
