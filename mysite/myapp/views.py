@@ -1,4 +1,5 @@
 from django.shortcuts import render,get_object_or_404
+from .forms import ProductForm
 from .models import Product,OrderDetail
 
 # Create your views here.
@@ -20,3 +21,7 @@ def checkout(request,id):
         has_paid=False,
     )
     return render(request, 'myapp/checkout.html', {'order': order, 'product': product})
+
+def create_product(request):
+    form = ProductForm(request.POST or None)
+    return render(request, 'myapp/create_product.html', {'form': form})
