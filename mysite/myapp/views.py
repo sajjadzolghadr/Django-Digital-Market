@@ -32,3 +32,7 @@ def create_product(request):
         form = ProductForm()
 
     return render(request, 'myapp/create_product.html', {'form': form})
+
+def orders_list(request):
+    orders = OrderDetail.objects.all().order_by('-created_on')
+    return render(request, 'myapp/order_list.html', {'orders': orders})

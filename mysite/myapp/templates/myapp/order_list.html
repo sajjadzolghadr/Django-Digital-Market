@@ -1,0 +1,23 @@
+{% extends 'myapp/base.html' %}
+
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<h1>Orders</h1>
+
+{% for order in orders %}
+<div class="order">
+    <h3>Order #{{ order.id }}</h3>
+    <p>Total: ${{ order.amount }}</p>
+    <p>Name: {{ order.product }}</p>
+    <p>Status: {{ order.has_paid}}</p>
+
+
+    <a href="{% url 'checkout' order.product.id %}">
+        <button>Checkout</button>
+    </a>
+</div>
+{% empty %}
+<p>No orders found.</p>
+{% endfor %}
+{% endblock %}
