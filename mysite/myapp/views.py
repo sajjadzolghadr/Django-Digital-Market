@@ -5,7 +5,8 @@ from .models import Product,OrderDetail
 # Create your views here.
 def index(request):
     products = Product.objects.all()
-    return render(request, 'myapp/index.html', {'products': products})
+    orders = OrderDetail.objects.all()
+    return render(request, 'myapp/index.html', {'products': products,'orders': orders})
 
 def detail(request,id):
     product = Product.objects.get(id=id)
@@ -24,7 +25,7 @@ def checkout(request,id):
 
 def create_product(request):
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
+        form = ProductForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             form.save()
             return redirect('index')
@@ -36,3 +37,15 @@ def create_product(request):
 def orders_list(request):
     orders = OrderDetail.objects.all().order_by('-created_on')
     return render(request, 'myapp/order_list.html', {'orders': orders})
+
+def edit_product(request,id):
+    product =Product.objects.get(id=id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST or None, request.FILES or None,instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = ProductForm(instance=product)
+
+    return render(request, 'myapp/edit_product.html', {'form': form, 'product': product})
