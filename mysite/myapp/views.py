@@ -1,5 +1,5 @@
 from django.shortcuts import render,get_object_or_404,redirect
-from .forms import ProductForm
+from .forms import ProductForm, RegisterForm
 from .models import Product,OrderDetail
 
 # Create your views here.
@@ -58,3 +58,15 @@ def delete_product(request, id):
         return redirect('index')
 
     return render(request, 'myapp/delete_product.html', {'product': product})
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = RegisterForm()
+
+    return render(request, 'myapp/register.html', {'form': form})
