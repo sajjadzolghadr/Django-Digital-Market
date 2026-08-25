@@ -1,0 +1,12 @@
+{% extends 'myapp/base.html' %}
+{% block title %}Logout{% endblock %}
+{% block content %}
+<div class="col-md-6 mx-auto">
+  <div class="card p-4 text-center">
+    <h3>You have been logged out</h3>
+    <a href="{% url 'login' %}" class="btn btn-success">
+      Login Again
+    </a>
+  </div>
+</div>
+{% endblock %}
