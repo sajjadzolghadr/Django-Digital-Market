@@ -27,7 +27,9 @@ def create_product(request):
     if request.method == 'POST':
         form = ProductForm(request.POST or None, request.FILES or None)
         if form.is_valid():
-            form.save()
+            new_product=form.save(commit=False)
+            new_product.seller = request.user
+            new_product.save()
             return redirect('index')
     else:
         form = ProductForm()
