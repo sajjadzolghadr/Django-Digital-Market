@@ -42,6 +42,8 @@ def orders_list(request):
 
 def edit_product(request,id):
     product =Product.objects.get(id=id)
+    if product.seller != request.user:
+        return redirect('invalid')
     if request.method == 'POST':
         form = ProductForm(request.POST or None, request.FILES or None,instance=product)
         if form.is_valid():
@@ -54,7 +56,8 @@ def edit_product(request,id):
 
 def delete_product(request, id):
     product = Product.objects.get(id=id)
-
+    if product.seller != request.user:
+        return redirect('invalid')
     if request.method == 'POST':
         product.delete()
         return redirect('index')
@@ -72,3 +75,7 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'myapp/register.html', {'form': form})
+
+
+def invalid(request):
+    return render(request, 'myapp/invalid.html')
