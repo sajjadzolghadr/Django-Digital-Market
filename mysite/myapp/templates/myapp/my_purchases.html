@@ -4,15 +4,17 @@
 {% for purchase in purchases %}
   <div class="card p-3 mb-2">
     <h5>{{ purchase.product.name }}</h5>
-    <p>{{ purchase.product.price }} $</p>
-
-    {% if purchase.product.file %}
-      <a href="{{ purchase.product.file.url }}" class="btn btn-success">
-        Download
-      </a>
-    {% endif %}
+    <p>${{ purchase.product.price }}</p>
   </div>
 {% empty %}
-  <p>You have no purchases.</p>
+  <p>Your cart is empty.</p>
 {% endfor %}
+
+{% if purchases %}
+<form method="post" action="{% url 'submit_order' %}">
+  {% csrf_token %}
+  <button class="btn btn-success">Submit Order</button>
+</form>
+{% endif %}
+
 {% endblock %}

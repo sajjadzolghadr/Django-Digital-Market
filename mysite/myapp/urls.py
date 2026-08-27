@@ -14,6 +14,8 @@ urlpatterns = [
     path('login/',auth_views.LoginView.as_view(template_name='myapp/login.html'), name='login'),
     path('logout/',auth_views.LogoutView.as_view(template_name='myapp/logout.html'), name='logout'),
     path('invalid/',views.invalid, name='invalid'),
-    path('my-purchases/',views.my_purchases, name='my_purchases'),
+    path('cart/',views.my_purchases, name='my_purchases'),
+    path('add-to-cart/<int:id>/',views.add_to_cart,name='add_to_cart'),
+    path('submit-order/', views.submit_order, name='submit_order'),
 
 ]

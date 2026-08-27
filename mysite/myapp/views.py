@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm
-from .models import Product, OrderDetail, Purchase
+from .models import Product, OrderDetail, Purchase, Order
 
 
 # Create your views here.
@@ -20,7 +20,6 @@ def checkout(request,id):
         customer_email=request.user.email,
         product=product,
         amount=product.price,
-        stripe_payment_id="",
         has_paid=False,
     )
     return render(request, 'myapp/checkout.html', {'order': order, 'product': product})
@@ -82,8 +81,42 @@ def register(request):
 def invalid(request):
     return render(request, 'myapp/invalid.html')
 
+@login_required
+def add_to_cart(request, id):
+    product = Product.objects.get(id=id)
+
+    Purchase.objects.get_or_create(
+        user=request.user,
+        product=product
+    )
+
+    return redirect('index')
 
 @login_required
 def my_purchases(request):
     purchases = Purchase.objects.filter(user=request.user)
     return render(request, 'myapp/my_purchases.html', {'purchases': purchases})
+
+@login_required
+def submit_order(request):
+    if request.method == 'POST':
+        purchases = Purchase.objects.filter(user=request.user)
+
+        if purchases.exists():
+            order = Order.objects.create(
+                user=request.user
+            )
+
+            for purchase in purchases:
+                OrderDetail.objects.create(
+                    order=order,
+                    product=purchase.product,
+                    amount=purchase.product.price,
+                    has_paid=False
+                )
+
+            purchases.delete()
+
+        return redirect('my_purchases')
+
+    return redirect('my_purchases')
