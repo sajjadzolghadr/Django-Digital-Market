@@ -1,20 +1,14 @@
 {% extends 'myapp/base.html' %}
-
 {% block title %}Orders{% endblock %}
-
 {% block content %}
-<h1>Orders</h1>
-
+<h3>Orders</h3>
 {% for order in orders %}
-<div class="order">
-    <h3>Order #{{ order.id }}</h3>
-    <p>Total: ${{ order.amount }}</p>
-    <p>Name: {{ order.product }}</p>
-    <p>Status: {{ order.has_paid}}</p>
-
-
-    <a href="{% url 'checkout' order.product.id %}">
-        <button>Checkout</button>
+<div class="card p-3 mb-3">
+    <h5>User: {{ order.user.username }}</h5>
+    <p>{{ order.created_at }}</p>
+    <a href="{% url 'order_detail' order.id %}"
+       class="btn btn-primary">
+        Order Details
     </a>
 </div>
 {% empty %}

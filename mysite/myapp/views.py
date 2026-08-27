@@ -7,7 +7,7 @@ from .models import Product, OrderDetail, Purchase, Order
 # Create your views here.
 def index(request):
     products = Product.objects.all()
-    orders = OrderDetail.objects.all()
+    orders = Order.objects.all()
     return render(request, 'myapp/index.html', {'products': products,'orders': orders})
 
 def detail(request,id):
@@ -37,9 +37,24 @@ def create_product(request):
 
     return render(request, 'myapp/create_product.html', {'form': form})
 
+@login_required
 def orders_list(request):
-    orders = OrderDetail.objects.all().order_by('-created_on')
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'myapp/order_list.html', {'orders': orders})
+@login_required
+def order_detail(request, id):
+    order = get_object_or_404(
+        Order,
+        id=id,
+        user=request.user
+    )
+
+    details = order.details.all()
+
+    return render(request, 'myapp/order_detail.html', {
+        'order': order,
+        'details': details
+    })
 
 def edit_product(request,id):
     product =Product.objects.get(id=id)
