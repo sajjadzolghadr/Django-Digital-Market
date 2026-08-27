@@ -1,6 +1,8 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm
-from .models import Product,OrderDetail
+from .models import Product, OrderDetail, Purchase
+
 
 # Create your views here.
 def index(request):
@@ -79,3 +81,9 @@ def register(request):
 
 def invalid(request):
     return render(request, 'myapp/invalid.html')
+
+
+@login_required
+def my_purchases(request):
+    purchases = Purchase.objects.filter(user=request.user)
+    return render(request, 'myapp/my_purchases.html', {'purchases': purchases})

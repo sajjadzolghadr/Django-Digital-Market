@@ -1,0 +1,18 @@
+{% extends 'myapp/base.html' %}
+{% block content %}
+<h3>My Purchases</h3>
+{% for purchase in purchases %}
+  <div class="card p-3 mb-2">
+    <h5>{{ purchase.product.name }}</h5>
+    <p>{{ purchase.product.price }} $</p>
+
+    {% if purchase.product.file %}
+      <a href="{{ purchase.product.file.url }}" class="btn btn-success">
+        Download
+      </a>
+    {% endif %}
+  </div>
+{% empty %}
+  <p>You have no purchases.</p>
+{% endfor %}
+{% endblock %}
