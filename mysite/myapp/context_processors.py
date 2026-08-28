@@ -1,9 +1,12 @@
-from .models import Purchase
+from .models import Purchase, Order
 
-def cart_count(request):
+
+def count(request):
     if request.user.is_authenticated:
-        count = Purchase.objects.filter(user=request.user).count()
+        cart_count = Purchase.objects.filter(user=request.user).count()
+        orders_count = Order.objects.filter(user=request.user).count()
     else:
-        count = 0
+        cart_count = 0
+        orders_count = 0
 
-    return {'cart_count': count}
+    return {'cart_count': cart_count, 'orders_count': orders_count}
