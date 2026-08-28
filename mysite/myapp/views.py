@@ -41,7 +41,7 @@ def order_detail(request, id):
         user=request.user
     )
 
-    details = order.details.all()
+    details = OrderDetail.objects.filter(order=order)
 
     return render(request, 'myapp/order_detail.html', {
         'order': order,
