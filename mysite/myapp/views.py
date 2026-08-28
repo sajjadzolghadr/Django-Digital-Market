@@ -30,7 +30,8 @@ def create_product(request):
 
 @login_required
 def orders_list(request):
-    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    orders = Order.objects.filter(user=request.user,details__has_paid=False
+    ).distinct().order_by('-created_at')
     return render(request, 'myapp/order_list.html', {'orders': orders})
 @login_required
 def order_detail(request, id):
@@ -127,3 +128,20 @@ def submit_order(request):
         return redirect('my_purchases')
 
     return redirect('my_purchases')
+
+@login_required
+def pay_order(request, id):
+    order = get_object_or_404(
+        Order,
+        id=id,
+        user=request.user
+    )
+
+    if request.method == 'POST':
+        OrderDetail.objects.filter(order=order).update(
+            has_paid=True
+        )
+
+        return redirect('orders_list')
+
+    return redirect('order_detail', id=order.id)
