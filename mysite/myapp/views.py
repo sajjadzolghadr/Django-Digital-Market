@@ -14,15 +14,6 @@ def detail(request,id):
     product = Product.objects.get(id=id)
     return render(request, 'myapp/detail.html', {'product': product})
 
-def checkout(request,id):
-    product = get_object_or_404(Product,id=id)
-    order=OrderDetail.objects.create(
-        customer_email=request.user.email,
-        product=product,
-        amount=product.price,
-        has_paid=False,
-    )
-    return render(request, 'myapp/checkout.html', {'order': order, 'product': product})
 
 def create_product(request):
     if request.method == 'POST':
@@ -110,7 +101,8 @@ def add_to_cart(request, id):
 @login_required
 def my_purchases(request):
     purchases = Purchase.objects.filter(user=request.user)
-    return render(request, 'myapp/my_purchases.html', {'purchases': purchases})
+    total = sum(p.product.price for p in purchases)
+    return render(request, 'myapp/my_purchases.html', {'purchases': purchases,'total': total})
 
 @login_required
 def submit_order(request):

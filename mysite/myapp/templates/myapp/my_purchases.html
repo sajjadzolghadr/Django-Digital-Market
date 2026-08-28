@@ -11,9 +11,10 @@
 {% endfor %}
 
 {% if purchases %}
+<h4 class="mt-3">Total: ${{ total }}</h4>
 <form method="post" action="{% url 'submit_order' %}">
   {% csrf_token %}
-  <button class="btn btn-success">Submit Order</button>
+  <button class="btn btn-success">Checkout Order</button>
 </form>
 {% endif %}
 
