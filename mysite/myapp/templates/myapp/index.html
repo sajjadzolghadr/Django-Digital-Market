@@ -107,24 +107,44 @@
 </div>
 
   <!-- Recent Activity -->
-  <div class="col-12">
-    <div class="card card-shadow p-4">
-      <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
-      <ul class="list-group list-group-flush mt-3">
-        <li class="list-group-item d-flex justify-content-between">
-          <span><i class="fas fa-plus-circle text-success me-2"></i>New product "Django Course" added.</span>
-          <small class="text-muted">2 min ago</small>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span><i class="fas fa-check-circle text-primary me-2"></i>Order #1024 confirmed.</span>
-          <small class="text-muted">1 hour ago</small>
-        </li>
-        <li class="list-group-item d-flex justify-content-between">
-          <span><i class="fas fa-user-plus text-warning me-2"></i>New user registered.</span>
-          <small class="text-muted">3 hours ago</small>
-        </li>
-      </ul>
-    </div>
+<div class="col-12">
+  <div class="card card-shadow p-4">
+    <h5><i class="fas fa-clock me-2"></i>Recent Activity</h5>
+
+    <ul class="list-group list-group-flush mt-3">
+
+      {% if latest_product %}
+      <li class="list-group-item d-flex justify-content-between">
+        <span>
+          <i class="fas fa-plus-circle text-success me-2"></i>
+          New product "{{ latest_product.name }}" added.
+        </span>
+        <small class="text-muted">{{ latest_product.created_at }}</small>
+      </li>
+      {% endif %}
+
+      {% if latest_order %}
+      <li class="list-group-item d-flex justify-content-between">
+        <span>
+          <i class="fas fa-check-circle text-primary me-2"></i>
+          New order by {{ latest_order.user.username }}.
+        </span>
+        <small class="text-muted">{{ latest_order.created_at }}</small>
+      </li>
+      {% endif %}
+
+      {% if latest_user %}
+      <li class="list-group-item d-flex justify-content-between">
+        <span>
+          <i class="fas fa-user-plus text-warning me-2"></i>
+          New user "{{ latest_user.username }}" registered.
+        </span>
+        <small class="text-muted">{{ latest_user.date_joined }}</small>
+      </li>
+      {% endif %}
+
+    </ul>
   </div>
+</div>
 </div>
 {% endblock %}

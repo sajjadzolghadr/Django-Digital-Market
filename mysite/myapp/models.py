@@ -8,6 +8,7 @@ class Product(models.Model):
     description = models.CharField(max_length=500)
     price = models.FloatField()
     file = models.FileField(upload_to='uploads')
+    created_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.name
 
