@@ -6,8 +6,8 @@ from .models import Product, OrderDetail, Purchase, Order
 
 # Create your views here.
 def index(request):
-    products = Product.objects.all()
-    orders = Order.objects.all()
+    products = Product.objects.select_related('seller').all()
+    orders = Order.objects.select_related('user').all()
     return render(request, 'myapp/index.html', {'products': products,'orders': orders})
 
 def detail(request,id):
