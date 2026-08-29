@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm
 from .models import Product, OrderDetail, Purchase, Order
@@ -8,7 +9,8 @@ from .models import Product, OrderDetail, Purchase, Order
 def index(request):
     products = Product.objects.select_related('seller').all()
     orders = Order.objects.select_related('user').all()
-    return render(request, 'myapp/index.html', {'products': products,'orders': orders})
+    total_sales = OrderDetail.objects.filter(has_paid=True).aggregate(total=Sum('amount'))['total'] or 0
+    return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales})
 
 def detail(request,id):
     product = Product.objects.get(id=id)
