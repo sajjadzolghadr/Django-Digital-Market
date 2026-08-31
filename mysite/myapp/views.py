@@ -10,11 +10,12 @@ from .models import Product, OrderDetail, Purchase, Order,Customer
 def index(request):
     products = Product.objects.select_related('seller').all()
     orders = Order.objects.select_related('user').all()
+    customers = Customer.objects.select_related('user').all()
     total_sales = OrderDetail.objects.filter(has_paid=True).aggregate(total=Sum('amount'))['total'] or 0
     latest_product = Product.objects.order_by('-id').first()
     latest_order = Order.objects.order_by('-id').first()
     latest_user = User.objects.order_by('-id').first()
-    return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user})
+    return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers})
 
 def detail(request,id):
     product = Product.objects.get(id=id)
