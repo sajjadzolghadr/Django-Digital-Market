@@ -12,9 +12,16 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Customer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.user.username
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
 class OrderDetail(models.Model):
@@ -35,9 +42,3 @@ class Purchase(models.Model):
 
 
 
-class Customer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.user.username
