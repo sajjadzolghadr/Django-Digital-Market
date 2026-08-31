@@ -4,7 +4,7 @@
 <h3>Orders</h3>
 {% for order in orders %}
 <div class="card p-3 mb-3">
-    <h5>User: {{ order.user.username }}</h5>
+    <h5>Customer: {{ order.customer }}</h5>
     <p>{{ order.created_at }}</p>
     <a href="{% url 'order_detail' order.id %}"
        class="btn btn-primary">

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm
-from .models import Product, OrderDetail, Purchase, Order
+from .models import Product, OrderDetail, Purchase, Order,Customer
 
 
 # Create your views here.
@@ -115,10 +115,12 @@ def my_purchases(request):
 def submit_order(request):
     if request.method == 'POST':
         purchases = Purchase.objects.filter(user=request.user)
+        customer, created = Customer.objects.get_or_create(user=request.user)
 
         if purchases.exists():
             order = Order.objects.create(
-                user=request.user
+                user=request.user,
+                customer=customer
             )
 
             for purchase in purchases:
