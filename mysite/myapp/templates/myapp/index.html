@@ -5,6 +5,7 @@
 
 {% block content %}
 <div class="row g-4">
+    {% if is_seller %}
   <!-- Welcome Card -->
   <div class="col-12">
     <div class="card card-shadow bg-primary text-white p-4" style="background: linear-gradient(135deg, #0d6efd, #0a58ca);">
@@ -51,7 +52,7 @@
       <small class="text-muted">+18 this week</small>
     </div>
   </div>
-
+{% endif %}
   <!-- Products Section -->
 <div class="col-12">
   <div class="card card-shadow p-4">
@@ -105,7 +106,7 @@
     </div>
   </div>
 </div>
-
+{% if is_seller %}
   <!-- Recent Activity -->
 <div class="col-12">
   <div class="card card-shadow p-4">
@@ -146,5 +147,6 @@
     </ul>
   </div>
 </div>
+    {% endif %}
 </div>
 {% endblock %}

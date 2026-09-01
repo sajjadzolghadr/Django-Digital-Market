@@ -11,3 +11,16 @@ def count(request):
         orders_count = 0
 
     return {'cart_count': cart_count, 'orders_count': orders_count}
+
+
+def user_is_seller(request):
+    if request.user.is_authenticated:
+        return {
+            'is_seller': request.user.groups.filter(
+                name='seller'
+            ).exists()
+        }
+
+    return {
+        'is_seller': False
+    }
