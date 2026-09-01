@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User,Group
 from .models import Product, Customer
 
 
@@ -27,6 +27,15 @@ class ProductForm(forms.ModelForm):
         }
 
 class RegisterForm(forms.ModelForm):
+    ROLE_CHOICES = [
+        ('customer', 'Customer'),
+        ('seller', 'seller'),
+    ]
+
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.RadioSelect
+    )
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
@@ -70,6 +79,15 @@ class RegisterForm(forms.ModelForm):
 
         if commit:
             user.save()
-            Customer.objects.create(user=user)
+            role = self.cleaned_data['role']
+
+            if role == 'customer':
+                Customer.objects.create(user=user)
+
+            elif role == 'seller':
+                seller_group, created = Group.objects.get_or_create(
+                    name='seller'
+                )
+                user.groups.add(seller_group)
 
         return user
