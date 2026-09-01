@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Product
+from .models import Product, Customer
 
 
 class ProductForm(forms.ModelForm):
@@ -70,5 +70,6 @@ class RegisterForm(forms.ModelForm):
 
         if commit:
             user.save()
+            Customer.objects.create(user=user)
 
         return user

@@ -9,7 +9,7 @@ from .models import Product, OrderDetail, Purchase, Order,Customer
 # Create your views here.
 def index(request):
     products = Product.objects.select_related('seller').all()
-    orders = Order.objects.select_related('user').all()
+    orders = Order.objects.select_related('customer').all()
     customers = Customer.objects.select_related('user').all()
     total_sales = OrderDetail.objects.filter(has_paid=True).aggregate(total=Sum('amount'))['total'] or 0
     latest_product = Product.objects.order_by('-id').first()
@@ -23,6 +23,8 @@ def detail(request,id):
 
 
 def create_product(request):
+    if not request.user.groups.filter(name='seller').exists():
+        return redirect('invalid')
     if request.method == 'POST':
         form = ProductForm(request.POST or None, request.FILES or None)
         if form.is_valid():
@@ -37,7 +39,7 @@ def create_product(request):
 
 @login_required
 def orders_list(request):
-    orders = Order.objects.filter(user=request.user,details__has_paid=False
+    orders = Order.objects.filter(customer__user=request.user,details__has_paid=False
     ).distinct().order_by('-created_at')
     return render(request, 'myapp/order_list.html', {'orders': orders})
 @login_required
@@ -45,7 +47,7 @@ def order_detail(request, id):
     order = get_object_or_404(
         Order,
         id=id,
-        user=request.user
+        customer__user=request.user
     )
 
     details = OrderDetail.objects.filter(order=order)
@@ -116,13 +118,10 @@ def my_purchases(request):
 def submit_order(request):
     if request.method == 'POST':
         purchases = Purchase.objects.filter(user=request.user)
-        customer, created = Customer.objects.get_or_create(user=request.user)
+        customer = get_object_or_404(Customer,user=request.user)
 
         if purchases.exists():
-            order = Order.objects.create(
-                user=request.user,
-                customer=customer
-            )
+            order = Order.objects.create(customer=customer)
 
             for purchase in purchases:
                 OrderDetail.objects.create(
@@ -143,7 +142,7 @@ def pay_order(request, id):
     order = get_object_or_404(
         Order,
         id=id,
-        user=request.user
+        customer__user=request.user
     )
 
     if request.method == 'POST':
