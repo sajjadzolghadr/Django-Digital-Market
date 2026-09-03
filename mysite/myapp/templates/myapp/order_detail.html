@@ -6,7 +6,7 @@
 
 <h3>Order Details</h3>
 
-<p>User: {{ order.user.username }}</p>
+<p>User: {{ order.customer.user.username }}</p>
 
 {% for detail in details %}
 <div class="card p-3 mb-2">
@@ -14,10 +14,15 @@
     <p>Price: ${{ detail.amount }}</p>
 
     {% if detail.has_paid %}
-        <span class="badge bg-success">Paid</span>
-    {% else %}
-        <span class="badge bg-warning text-dark">Unpaid</span>
-    {% endif %}
+    <span class="badge bg-success">Paid</span>
+
+    <a href="{% url 'download_product' detail.id %}"
+       class="btn btn-primary btn-sm mt-2">
+        <i class="fas fa-download"></i> Download
+    </a>
+{% else %}
+    <span class="badge bg-warning text-dark">Unpaid</span>
+{% endif %}
 </div>
 {% endfor %}
 

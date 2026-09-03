@@ -4,6 +4,7 @@ from django.db.models import Sum
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm
 from .models import Product, OrderDetail, Purchase, Order,Customer
+from django.http import FileResponse
 
 
 # Create your views here.
@@ -155,6 +156,26 @@ def pay_order(request, id):
             has_paid=True
         )
 
-        return redirect('orders_list')
+        return redirect('order_detail', id=order.id)
 
     return redirect('order_detail', id=order.id)
+
+@login_required
+def download_product(request, id):
+    detail = get_object_or_404(
+        OrderDetail,
+        id=id,
+        order__customer__user=request.user,
+        has_paid=True
+    )
+
+    product = detail.product
+
+    if not product.file:
+        return redirect('invalid')
+
+    return FileResponse(
+        product.file.open('rb'),
+        as_attachment=True,
+        filename=product.file.name.split('/')[-1]
+    )
