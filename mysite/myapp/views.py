@@ -139,7 +139,7 @@ def submit_order(request):
 
             purchases.delete()
 
-        return redirect('my_purchases')
+        return redirect('orders_list')
 
     return redirect('my_purchases')
 
