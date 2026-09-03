@@ -12,15 +12,15 @@ def index(request):
     orders = Order.objects.select_related('customer').all()
     customers = Customer.objects.select_related('user').all()
     seller_products = products
+    seller_orders = orders
     if request.user.is_authenticated and request.user.groups.filter(name='seller').exists():
-        seller_products = Product.objects.filter(
-            seller=request.user
-        )
+        seller_products = Product.objects.filter(seller=request.user)
+        seller_orders = Order.objects.filter(details__product__seller=request.user).distinct()
     total_sales = OrderDetail.objects.filter(product__seller=request.user,has_paid=True).aggregate(total=Sum('amount'))['total'] or 0
     latest_product = Product.objects.order_by('-id').first()
     latest_order = Order.objects.order_by('-id').first()
     latest_user = User.objects.order_by('-id').first()
-    return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers,'seller_products': seller_products})
+    return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers,'seller_products': seller_products,'seller_orders': seller_orders})
 
 def detail(request,id):
     product = Product.objects.get(id=id)
