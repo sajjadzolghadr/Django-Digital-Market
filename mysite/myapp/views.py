@@ -195,12 +195,11 @@ def sales_history(request):
     if not request.user.groups.filter(name='seller').exists():
         return redirect('invalid')
 
-    sales = OrderDetail.objects.filter(
-        product__seller=request.user,
-        has_paid=True
-    ).select_related(
-        'product',
-        'order__customer__user'
-    ).order_by('-created_on')
+    orders = Order.objects.filter(
+        details__product__seller=request.user,
+        details__has_paid=True
+    ).distinct().prefetch_related('details__product').order_by('-created_at')
 
-    return render(request, 'myapp/sales_history.html', {'sales': sales})
+    return render(request, 'myapp/sales_history.html', {
+        'orders': orders
+    })

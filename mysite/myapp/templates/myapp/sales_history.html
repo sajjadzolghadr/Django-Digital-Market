@@ -6,12 +6,17 @@
 
 <h3>Sales History</h3>
 
-{% for sale in sales %}
+{% for order in orders %}
 <div class="card p-3 mb-2">
-    <b>Order #{{ sale.order.id }}</b>
-    <p>Product: {{ sale.product.name }}</p>
-    <p>Customer: {{ sale.order.customer.user.username }}</p>
-    <p>Amount: ${{ sale.amount }}</p>
+    <b>Order #{{ order.id }}</b>
+    <p>Customer: {{ order.customer.user.username }}</p>
+
+    {% for detail in order.details.all %}
+        {% if detail.product.seller == request.user and detail.has_paid %}
+            <p>Product --> {{ detail.product.name }} - ${{ detail.amount }}</p>
+        {% endif %}
+    {% endfor %}
+
     <span class="badge bg-success">Paid</span>
 </div>
 {% empty %}
