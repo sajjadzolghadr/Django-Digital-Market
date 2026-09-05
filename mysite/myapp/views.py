@@ -188,3 +188,19 @@ def my_downloads(request):
     ).select_related('product', 'order')
 
     return render(request, 'myapp/my_downloads.html', { 'downloads': downloads})
+
+
+@login_required
+def sales_history(request):
+    if not request.user.groups.filter(name='seller').exists():
+        return redirect('invalid')
+
+    sales = OrderDetail.objects.filter(
+        product__seller=request.user,
+        has_paid=True
+    ).select_related(
+        'product',
+        'order__customer__user'
+    ).order_by('-created_on')
+
+    return render(request, 'myapp/sales_history.html', {'sales': sales})
