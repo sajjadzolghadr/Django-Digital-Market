@@ -179,3 +179,12 @@ def download_product(request, id):
         as_attachment=True,
         filename=product.file.name.split('/')[-1]
     )
+
+@login_required
+def my_downloads(request):
+    downloads = OrderDetail.objects.filter(
+        order__customer__user=request.user,
+        has_paid=True
+    ).select_related('product', 'order')
+
+    return render(request, 'myapp/my_downloads.html', { 'downloads': downloads})
