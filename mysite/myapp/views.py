@@ -1,15 +1,19 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Sum
+from django.db.models import Sum , Q
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm
 from .models import Product, OrderDetail, Purchase, Order,Customer
 from django.http import FileResponse
-
-
 # Create your views here.
 def index(request):
+    query = request.GET.get('q', '')
     products = Product.objects.select_related('seller').all()
+    if query:
+        products = products.filter(
+            Q(name__icontains=query) |
+            Q(description__icontains=query)
+        )
     orders = Order.objects.select_related('customer').all()
     customers = Customer.objects.select_related('user').all()
     seller_products = products
@@ -21,7 +25,7 @@ def index(request):
     latest_product = Product.objects.order_by('-id').first()
     latest_order = Order.objects.order_by('-id').first()
     latest_user = User.objects.order_by('-id').first()
-    return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers,'seller_products': seller_products,'seller_orders': seller_orders})
+    return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers,'seller_products': seller_products,'seller_orders': seller_orders,'query': query})
 
 def detail(request,id):
     product = Product.objects.get(id=id)
