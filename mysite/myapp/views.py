@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum , Q
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm
-from .models import Product, OrderDetail, Purchase, Order,Customer
+from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist
 from django.http import FileResponse
 # Create your views here.
 def index(request):
@@ -215,4 +215,31 @@ def sales_history(request):
 
     return render(request, 'myapp/sales_history.html', {
         'orders': orders
+    })
+
+@login_required
+def add_to_wishlist(request, id):
+    product = get_object_or_404(Product, id=id)
+    customer = get_object_or_404(Customer, user=request.user)
+
+    Wishlist.objects.get_or_create(
+        customer=customer,
+        product=product
+    )
+
+    return redirect('index')
+
+@login_required
+def my_wishlist(request):
+    customer = get_object_or_404(
+        Customer,
+        user=request.user
+    )
+
+    wishlist = Wishlist.objects.filter(
+        customer=customer
+    ).select_related('product')
+
+    return render(request, 'myapp/wishlist.html', {
+        'wishlist': wishlist
     })

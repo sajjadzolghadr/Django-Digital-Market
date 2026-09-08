@@ -21,5 +21,7 @@ urlpatterns = [
     path('orders/detail/<int:id>/download/',views.download_product,name='download_product'),
     path('downloads/', views.my_downloads, name='my_downloads'),
     path('sales/', views.sales_history, name='sales_history'),
+    path('wishlist/add/<int:id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('wishlist/', views.my_wishlist, name='my_wishlist'),
 
 ]
