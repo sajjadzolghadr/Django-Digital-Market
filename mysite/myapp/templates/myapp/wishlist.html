@@ -1,10 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'myapp/base.html' %}
 
-</body>
-</html>
+{% block title %}Wishlist{% endblock %}
+
+{% block content %}
+
+<h3>My Wishlist ❤️</h3>
+
+{% for item in wishlist %}
+<div class="card p-3 mb-2">
+    <h5>{{ item.product.name }}</h5>
+    <p>${{ item.product.price }}</p>
+    <a href="{% url 'detail' item.product.id %}"
+       class="btn btn-primary">View</a>
+</div>
+{% empty %}
+<p>Your wishlist is empty.</p>
+{% endfor %}
+
+{% endblock %}
