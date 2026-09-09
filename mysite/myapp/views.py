@@ -243,3 +243,18 @@ def my_wishlist(request):
     return render(request, 'myapp/wishlist.html', {
         'wishlist': wishlist
     })
+
+
+@login_required
+def remove_from_wishlist(request, id):
+    customer = get_object_or_404(Customer, user=request.user)
+
+    wishlist = get_object_or_404(
+        Wishlist,
+        id=id,
+        customer=customer
+    )
+
+    wishlist.delete()
+
+    return redirect('my_wishlist')

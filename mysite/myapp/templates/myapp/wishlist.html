@@ -12,6 +12,10 @@
     <p>${{ item.product.price }}</p>
     <a href="{% url 'detail' item.product.id %}"
        class="btn btn-primary">View</a>
+    <a href="{% url 'remove_from_wishlist' item.id %}"
+   class="btn btn-danger btn-sm">
+    Remove
+</a>
 </div>
 {% empty %}
 <p>Your wishlist is empty.</p>
