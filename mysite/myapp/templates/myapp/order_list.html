@@ -1,17 +1,28 @@
 {% extends 'myapp/base.html' %}
-{% block title %}Orders{% endblock %}
+
+{% block title %}My Orders{% endblock %}
+
 {% block content %}
-<h3>Orders</h3>
+
+<h3>My Orders</h3>
+
 {% for order in orders %}
-<div class="card p-3 mb-3">
-    <h5>Customer: {{ order.customer }}</h5>
-    <p>{{ order.created_at }}</p>
+<div class="card p-3 mb-2">
+    <h5>Order #{{ order.id }}</h5>
+
+    {% if order.details.all.0.has_paid %}
+        <span class="badge bg-success">Paid</span>
+    {% else %}
+        <span class="badge bg-warning text-dark">Unpaid</span>
+    {% endif %}
+
     <a href="{% url 'order_detail' order.id %}"
-       class="btn btn-primary">
-        Order Details
+       class="btn btn-primary btn-sm mt-2">
+        Details
     </a>
 </div>
 {% empty %}
-<p>No orders found.</p>
+<p>No orders yet.</p>
 {% endfor %}
+
 {% endblock %}

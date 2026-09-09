@@ -58,9 +58,13 @@ def create_product(request):
 
 @login_required
 def orders_list(request):
-    orders = Order.objects.filter(customer__user=request.user,details__has_paid=False
-    ).distinct().order_by('-created_at')
-    return render(request, 'myapp/order_list.html', {'orders': orders})
+    orders = Order.objects.filter(
+        customer__user=request.user
+    ).prefetch_related('details').order_by('-created_at')
+
+    return render(request, 'myapp/order_list.html', {
+        'orders': orders
+    })
 @login_required
 def order_detail(request, id):
     order = get_object_or_404(
