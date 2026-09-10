@@ -13,11 +13,11 @@
 
     {% for detail in order.details.all %}
         {% if detail.product.seller == request.user and detail.has_paid %}
-            <p>Product --> {{ detail.product.name }} - ${{ detail.amount }}</p>
+            <p>{{ detail.product.name }} - ${{ detail.amount }}</p>
         {% endif %}
     {% endfor %}
 
-    <span class="badge bg-success">Paid</span>
+    <strong>Total: ${{ order.seller_total }}</strong>
 </div>
 {% empty %}
 <p>No sales yet.</p>
