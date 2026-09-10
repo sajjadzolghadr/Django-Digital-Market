@@ -217,6 +217,14 @@ def sales_history(request):
         details__has_paid=True
     ).distinct().prefetch_related('details__product').order_by('-created_at')
 
+    for order in orders:
+        order.seller_total = sum(
+            detail.amount
+            for detail in order.details.all()
+            if detail.product.seller == request.user
+            and detail.has_paid
+        )
+
     return render(request, 'myapp/sales_history.html', {
         'orders': orders
     })
