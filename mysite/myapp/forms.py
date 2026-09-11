@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User,Group
-from .models import Product, Customer
+from .models import Product, Customer, Review
 
 
 class ProductForm(forms.ModelForm):
@@ -91,3 +91,20 @@ class RegisterForm(forms.ModelForm):
                 user.groups.add(seller_group)
 
         return user
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'min': 1,
+                'max': 5
+            }),
+            'comment': forms.Textarea(attrs={
+                'class': 'form-control',
+                'placeholder': 'Write your review...'
+            }),
+        }
