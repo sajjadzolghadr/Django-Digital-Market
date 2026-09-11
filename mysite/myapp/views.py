@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Sum , Q
 from django.shortcuts import render,get_object_or_404,redirect
-from .forms import ProductForm, RegisterForm
+from .forms import ProductForm, RegisterForm, ReviewForm
 from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist
 from django.http import FileResponse
 # Create your views here.
@@ -279,3 +279,35 @@ def remove_from_wishlist(request, id):
     wishlist.delete()
 
     return redirect('my_wishlist')
+
+@login_required
+def add_review(request, id):
+    product = get_object_or_404(Product, id=id)
+    customer = get_object_or_404(Customer, user=request.user)
+
+    purchased = OrderDetail.objects.filter(
+        order__customer=customer,
+        product=product,
+        has_paid=True
+    ).exists()
+
+    if not purchased:
+        return redirect('invalid')
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.customer = customer
+            review.product = product
+            review.save()
+            return redirect('detail', id=product.id)
+
+    else:
+        form = ReviewForm()
+
+    return render(request, 'myapp/add_review.html', {
+        'form': form,
+        'product': product
+    })
