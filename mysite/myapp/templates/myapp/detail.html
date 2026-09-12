@@ -71,7 +71,7 @@
 {% empty %}
 <p>No reviews yet.</p>
 {% endfor %}
-          {% if user.is_authenticated %}
+          {% if can_review %}
     <a href="{% url 'add_review' product.id %}"
        class="btn btn-warning">
         Add Review

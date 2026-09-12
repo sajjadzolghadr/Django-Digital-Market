@@ -45,13 +45,23 @@ def index(request):
     latest_user = User.objects.order_by('-id').first()
     return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers,'seller_products': seller_products,'seller_orders': seller_orders,'query': query,'sort': sort,'min_price': min_price,'max_price': max_price})
 
-def detail(request,id):
-    product = Product.objects.get(id=id)
-    reviews = Review.objects.filter(
-        product=product
-    ).select_related('customer__user')
+@login_required
+def detail(request, id):
+    product = get_object_or_404(Product, id=id)
+    reviews = Review.objects.filter(product=product).select_related('customer__user')
+    can_review = False
+    if hasattr(request.user, 'customer'):
+        can_review = OrderDetail.objects.filter(
+            order__customer=request.user.customer,
+            product=product,
+            has_paid=True
+        ).exists()
 
-    return render(request, 'myapp/detail.html', {'product': product,'reviews': reviews})
+    return render(request, 'myapp/detail.html', {
+        'product': product,
+        'reviews': reviews,
+        'can_review': can_review,
+    })
 
 
 def create_product(request):
