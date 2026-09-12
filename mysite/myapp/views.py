@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum , Q
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm, ReviewForm
-from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist
+from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review
 from django.http import FileResponse
 # Create your views here.
 def index(request):
@@ -47,7 +47,11 @@ def index(request):
 
 def detail(request,id):
     product = Product.objects.get(id=id)
-    return render(request, 'myapp/detail.html', {'product': product})
+    reviews = Review.objects.filter(
+        product=product
+    ).select_related('customer__user')
+
+    return render(request, 'myapp/detail.html', {'product': product,'reviews': reviews})
 
 
 def create_product(request):
@@ -309,5 +313,5 @@ def add_review(request, id):
 
     return render(request, 'myapp/add_review.html', {
         'form': form,
-        'product': product
+        'product': product,
     })
