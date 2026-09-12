@@ -61,7 +61,12 @@
           <a href="#" class="btn btn-outline-secondary"><i class="fas fa-share-alt"></i></a>
         </div>
               <h4 class="mt-4">Reviews</h4>
-
+{% if average_rating %}
+<p>⭐ {{ average_rating|floatformat:1}} / 5</p>
+<p>{{ review_count }} Reviews</p>
+{% else %}
+<p>No ratings yet.</p>
+{% endif %}
 {% for review in reviews %}
 <div class="card p-3 mb-2">
     <strong>{{ review.customer.user.username }}</strong>

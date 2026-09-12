@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Sum , Q
+from django.db.models import Sum , Q,Avg
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm, ReviewForm
 from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review
@@ -49,6 +49,8 @@ def index(request):
 def detail(request, id):
     product = get_object_or_404(Product, id=id)
     reviews = Review.objects.filter(product=product).select_related('customer__user')
+    average_rating = reviews.aggregate(avg=Avg('rating'))['avg']
+    review_count = reviews.count()
     can_review = False
     if hasattr(request.user, 'customer'):
         can_review = OrderDetail.objects.filter(
@@ -61,6 +63,8 @@ def detail(request, id):
         'product': product,
         'reviews': reviews,
         'can_review': can_review,
+        'average_rating': average_rating,
+        'review_count': review_count,
     })
 
 
