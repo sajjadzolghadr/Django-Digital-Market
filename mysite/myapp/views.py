@@ -5,6 +5,7 @@ from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm, ReviewForm
 from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review
 from django.http import FileResponse
+from django.contrib import messages
 # Create your views here.
 def index(request):
     query = request.GET.get('q', '')
@@ -320,6 +321,7 @@ def add_review(request, id):
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if already_reviewed:
+            messages.warning(request, 'You have already reviewed this product.')
             return redirect('detail', id=product.id)
 
         if form.is_valid():
@@ -327,6 +329,7 @@ def add_review(request, id):
             review.customer = customer
             review.product = product
             review.save()
+            messages.success(request, 'Your review was submitted successfully.')
             return redirect('detail', id=product.id)
 
     else:
