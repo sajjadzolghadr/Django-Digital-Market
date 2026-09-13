@@ -309,11 +309,18 @@ def add_review(request, id):
         has_paid=True
     ).exists()
 
+    already_reviewed = Review.objects.filter(
+        customer=customer,
+        product=product
+    ).exists()
+
     if not purchased:
         return redirect('invalid')
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
+        if already_reviewed:
+            return redirect('detail', id=product.id)
 
         if form.is_valid():
             review = form.save(commit=False)
