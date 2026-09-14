@@ -6,6 +6,10 @@
 
 <h3>My Profile</h3>
 
+<p>
+    <strong>Role:</strong> {{ role }}
+</p>
+
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

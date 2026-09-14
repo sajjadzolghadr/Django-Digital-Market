@@ -342,6 +342,11 @@ def add_review(request, id):
 
 @login_required
 def profile(request):
+    if request.user.groups.filter(name='seller').exists():
+        role = 'Seller'
+    else:
+        role = 'Customer'
+
     if request.method == 'POST':
         form = ProfileForm(request.POST, instance=request.user)
 
@@ -352,5 +357,6 @@ def profile(request):
         form = ProfileForm(instance=request.user)
 
     return render(request, 'myapp/profile.html', {
-        'form': form
+        'form': form,
+        'role': role
     })
