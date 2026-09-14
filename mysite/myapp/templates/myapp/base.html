@@ -50,6 +50,10 @@
         </ul>
  <ul class="navbar-nav">
   {% if user.is_authenticated %}
+     <a class="nav-link d-flex align-items-center gap-1" href="{% url 'profile' %}">
+    <i class="fas fa-user"></i>
+    My Profile
+</a>
     <li class="nav-item">
       <form method="post" action="{% url 'logout' %}">
         {% csrf_token %}
