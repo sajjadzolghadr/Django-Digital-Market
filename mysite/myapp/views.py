@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Sum , Q,Avg
 from django.shortcuts import render,get_object_or_404,redirect
-from .forms import ProductForm, RegisterForm, ReviewForm
+from .forms import ProductForm, RegisterForm, ReviewForm, ProfileForm
 from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review
 from django.http import FileResponse
 from django.contrib import messages
@@ -338,4 +338,19 @@ def add_review(request, id):
     return render(request, 'myapp/add_review.html', {
         'form': form,
         'product': product,
+    })
+
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=request.user)
+
+    return render(request, 'myapp/profile.html', {
+        'form': form
     })
