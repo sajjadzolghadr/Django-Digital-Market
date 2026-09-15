@@ -6,6 +6,8 @@ from .forms import ProductForm, RegisterForm, ReviewForm, ProfileForm
 from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review
 from django.http import FileResponse
 from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 def index(request):
     query = request.GET.get('q', '')
@@ -359,4 +361,20 @@ def profile(request):
     return render(request, 'myapp/profile.html', {
         'form': form,
         'role': role
+    })
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            return redirect('profile')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'myapp/change_password.html', {
+        'form': form
     })

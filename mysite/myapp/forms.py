@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User,Group
 from .models import Product, Customer, Review
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 class ProductForm(forms.ModelForm):
