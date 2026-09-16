@@ -1,15 +1,16 @@
-from .models import Purchase, Order
+from .models import Purchase, Order,Notification
 
 
 def count(request):
     if request.user.is_authenticated:
         cart_count = Purchase.objects.filter(user=request.user).count()
         orders_count = Order.objects.filter(customer__user=request.user).distinct().count()
+        unread_notifications = Notification.objects.filter(user=request.user,is_read=False).count()
     else:
         cart_count = 0
         orders_count = 0
 
-    return {'cart_count': cart_count, 'orders_count': orders_count}
+    return {'cart_count': cart_count, 'orders_count': orders_count,'unread_notifications': unread_notifications}
 
 
 def user_is_seller(request):
