@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.db.models import Sum , Q,Avg
 from django.shortcuts import render,get_object_or_404,redirect
 from .forms import ProductForm, RegisterForm, ReviewForm, ProfileForm
-from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review
+from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review, Notification
 from django.http import FileResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
@@ -182,6 +182,10 @@ def submit_order(request):
                     product=purchase.product,
                     amount=purchase.product.price,
                     has_paid=False
+                )
+                Notification.objects.create(
+                    user=request.user,
+                    message=f"Order #{order.id} was created successfully."
                 )
 
             purchases.delete()
