@@ -183,7 +183,7 @@ def submit_order(request):
                     amount=purchase.product.price,
                     has_paid=False
                 )
-                Notification.objects.create(
+            Notification.objects.create(
                     user=request.user,
                     message=f"Order #{order.id} was created successfully."
                 )
