@@ -28,4 +28,5 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('change-password/',views.change_password,name='change_password'),
     path('notifications/',views.notifications,name='notifications'),
+    path('notifications/<int:id>/read/',views.mark_notification_read,name='mark_notification_read'),
 ]

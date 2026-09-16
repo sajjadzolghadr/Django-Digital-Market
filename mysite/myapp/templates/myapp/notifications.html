@@ -12,6 +12,12 @@
     <small class="d-block">
         {{ notification.created_at }}
     </small>
+    {% if not notification.is_read %}
+    <a href="{% url 'mark_notification_read' notification.id %}"
+       class="btn btn-sm btn-outline-dark mt-2">
+        Mark as Read
+    </a>
+    {% endif %}
 </div>
 {% empty %}
 <p>No notifications yet.</p>

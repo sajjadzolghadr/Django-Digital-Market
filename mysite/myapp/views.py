@@ -393,3 +393,16 @@ def notifications(request):
     return render(request, 'myapp/notifications.html', {
         'notifications': notifications
     })
+
+@login_required
+def mark_notification_read(request, id):
+    notification = get_object_or_404(
+        Notification,
+        id=id,
+        user=request.user
+    )
+
+    notification.is_read = True
+    notification.save()
+
+    return redirect('notifications')
