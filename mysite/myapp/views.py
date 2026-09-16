@@ -383,3 +383,13 @@ def change_password(request):
     return render(request, 'myapp/change_password.html', {
         'form': form
     })
+
+@login_required
+def notifications(request):
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).order_by('-created_at')
+
+    return render(request, 'myapp/notifications.html', {
+        'notifications': notifications
+    })

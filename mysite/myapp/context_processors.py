@@ -9,6 +9,7 @@ def count(request):
     else:
         cart_count = 0
         orders_count = 0
+        unread_notifications = 0
 
     return {'cart_count': cart_count, 'orders_count': orders_count,'unread_notifications': unread_notifications}
 

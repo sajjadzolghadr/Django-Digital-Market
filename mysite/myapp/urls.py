@@ -27,4 +27,5 @@ urlpatterns = [
     path('product/<int:id>/review/',views.add_review,name='add_review'),
     path('profile/', views.profile, name='profile'),
     path('change-password/',views.change_password,name='change_password'),
+    path('notifications/',views.notifications,name='notifications'),
 ]
