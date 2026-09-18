@@ -154,10 +154,13 @@ def invalid(request):
 def add_to_cart(request, id):
     product = Product.objects.get(id=id)
 
-    Purchase.objects.get_or_create(
+    purchase, created = Purchase.objects.get_or_create(
         user=request.user,
         product=product
     )
+    if not created:
+        purchase.quantity += 1
+        purchase.save()
 
     return redirect('index')
 
