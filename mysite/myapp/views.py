@@ -210,6 +210,15 @@ def pay_order(request, id):
             user=request.user,
             message=f"Order #{order.id} was paid successfully."
         )
+        details = OrderDetail.objects.filter(
+            order=order
+        ).select_related('product__seller')
+
+        for detail in details:
+            Notification.objects.create(
+                user=detail.product.seller,
+                message=f"Order #{order.id} Your product '{detail.product.name}' was sold ."
+            )
 
         return redirect('order_detail', id=order.id)
 
