@@ -206,6 +206,10 @@ def pay_order(request, id):
         OrderDetail.objects.filter(order=order).update(
             has_paid=True
         )
+        Notification.objects.create(
+            user=request.user,
+            message=f"Order #{order.id} was paid successfully."
+        )
 
         return redirect('order_detail', id=order.id)
 
