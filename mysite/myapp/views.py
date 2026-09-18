@@ -166,9 +166,22 @@ def add_to_cart(request, id):
 
 @login_required
 def my_purchases(request):
-    purchases = Purchase.objects.filter(user=request.user)
-    total = sum(p.product.price for p in purchases)
-    return render(request, 'myapp/my_purchases.html', {'purchases': purchases,'total': total})
+    purchases = Purchase.objects.filter(
+        user=request.user
+    ).select_related('product')
+
+    for purchase in purchases:
+        purchase.subtotal = purchase.product.price * purchase.quantity
+
+    total = sum(
+        purchase.subtotal
+        for purchase in purchases
+    )
+
+    return render(request, 'myapp/my_purchases.html', {
+        'purchases': purchases,
+        'total': total
+    })
 
 @login_required
 def submit_order(request):
