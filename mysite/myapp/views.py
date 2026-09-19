@@ -196,7 +196,8 @@ def submit_order(request):
                 OrderDetail.objects.create(
                     order=order,
                     product=purchase.product,
-                    amount=purchase.product.price,
+                    quantity=purchase.quantity,
+                    amount=purchase.product.price * purchase.quantity,
                     has_paid=False
                 )
             Notification.objects.create(
