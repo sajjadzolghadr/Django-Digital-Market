@@ -26,6 +26,11 @@
 {% endif %}
 </div>
 {% endfor %}
+{% if details %}
+    <h4 class="mt-3">
+        Total: ${{ total|floatformat:2 }}
+    </h4>
+{% endif %}
 
 {% if details %}
     {% if not details.0.has_paid %}

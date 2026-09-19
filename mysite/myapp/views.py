@@ -104,10 +104,12 @@ def order_detail(request, id):
     )
 
     details = OrderDetail.objects.filter(order=order)
+    total = sum(detail.amount for detail in details)
 
     return render(request, 'myapp/order_detail.html', {
         'order': order,
-        'details': details
+        'details': details,
+        'total': total,
     })
 
 def edit_product(request,id):
