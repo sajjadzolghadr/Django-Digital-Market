@@ -25,6 +25,7 @@ class Order(models.Model):
 class OrderDetail(models.Model):
     order = models.ForeignKey(Order,on_delete=models.CASCADE,related_name='details')
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
     amount = models.FloatField()
     has_paid = models.BooleanField(default=False)
     created_on = models.DateTimeField(auto_now_add=True)
