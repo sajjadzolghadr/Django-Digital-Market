@@ -11,7 +11,8 @@
 {% for detail in details %}
 <div class="card p-3 mb-2">
     <h5>{{ detail.product.name }}</h5>
-    <p>Price: ${{ detail.amount }}</p>
+    <p>Quantity: {{ detail.quantity }}</p>
+    <p>Amount: ${{ detail.amount|floatformat:2 }}</p>
 
     {% if detail.has_paid %}
     <span class="badge bg-success">Paid</span>
