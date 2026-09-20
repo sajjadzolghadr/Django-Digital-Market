@@ -469,3 +469,15 @@ def decrease_quantity(request, id):
         purchase.delete()
 
     return redirect('my_purchases')
+
+@login_required
+def remove_from_cart(request, id):
+    purchase = get_object_or_404(
+        Purchase,
+        id=id,
+        user=request.user
+    )
+
+    purchase.delete()
+
+    return redirect('my_purchases')
