@@ -29,4 +29,6 @@ urlpatterns = [
     path('change-password/',views.change_password,name='change_password'),
     path('notifications/',views.notifications,name='notifications'),
     path('notifications/<int:id>/read/',views.mark_notification_read,name='mark_notification_read'),
+    path('cart/increase/<int:id>/',views.increase_quantity,name='increase_quantity'),
+    path('cart/decrease/<int:id>/',views.decrease_quantity,name='decrease_quantity'),
 ]

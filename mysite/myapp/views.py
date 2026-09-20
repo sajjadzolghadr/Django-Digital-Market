@@ -112,6 +112,7 @@ def order_detail(request, id):
         'total': total,
     })
 
+
 def edit_product(request,id):
     product =Product.objects.get(id=id)
     if product.seller != request.user:
@@ -438,3 +439,33 @@ def mark_notification_read(request, id):
     notification.save()
 
     return redirect('notifications')
+
+@login_required
+def increase_quantity(request, id):
+    purchase = get_object_or_404(
+        Purchase,
+        id=id,
+        user=request.user
+    )
+
+    purchase.quantity += 1
+    purchase.save()
+
+    return redirect('my_purchases')
+
+
+@login_required
+def decrease_quantity(request, id):
+    purchase = get_object_or_404(
+        Purchase,
+        id=id,
+        user=request.user
+    )
+
+    if purchase.quantity > 1:
+        purchase.quantity -= 1
+        purchase.save()
+    else:
+        purchase.delete()
+
+    return redirect('my_purchases')
