@@ -5,7 +5,21 @@
   <div class="card p-3 mb-2">
     <h5>{{ purchase.product.name }}</h5>
     <p>Price: ${{ purchase.product.price }}</p>
-    <p>Quantity: {{ purchase.quantity }}</p>
+    <div class="d-flex align-items-center gap-2 mb-2">
+    <span>Quantity:</span>
+
+    <a href="{% url 'decrease_quantity' purchase.id %}"
+       class="btn btn-outline-danger btn-sm">
+        -
+    </a>
+
+    <span>{{ purchase.quantity }}</span>
+
+    <a href="{% url 'increase_quantity' purchase.id %}"
+       class="btn btn-outline-success btn-sm">
+        +
+    </a>
+</div>
     <p>Subtotal: ${{ purchase.subtotal|floatformat:2 }}</p>
   </div>
 {% empty %}
