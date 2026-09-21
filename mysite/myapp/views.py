@@ -227,9 +227,14 @@ def pay_order(request, id):
         OrderDetail.objects.filter(order=order).update(
             has_paid=True
         )
+        total = sum(
+            detail.amount
+            for detail in OrderDetail.objects.filter(order=order)
+        )
+
         Notification.objects.create(
             user=request.user,
-            message=f"Order #{order.id} was paid successfully."
+            message=f"Order #{order.id} was paid successfully. Total: ${total:.2f}"
         )
         details = OrderDetail.objects.filter(
             order=order
