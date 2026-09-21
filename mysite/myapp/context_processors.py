@@ -1,9 +1,10 @@
 from .models import Purchase, Order,Notification
+from django.db.models import Sum
 
 
 def count(request):
     if request.user.is_authenticated:
-        cart_count = Purchase.objects.filter(user=request.user).count()
+        cart_count = Purchase.objects.filter(user=request.user).aggregate( total=Sum('quantity'))['total'] or 0
         orders_count = Order.objects.filter(customer__user=request.user).distinct().count()
         unread_notifications = Notification.objects.filter(user=request.user,is_read=False).count()
     else:
