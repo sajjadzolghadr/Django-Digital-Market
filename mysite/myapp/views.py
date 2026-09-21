@@ -8,6 +8,7 @@ from django.http import FileResponse
 from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from collections import defaultdict
 # Create your views here.
 def index(request):
     query = request.GET.get('q', '')
@@ -234,10 +235,17 @@ def pay_order(request, id):
             order=order
         ).select_related('product__seller')
 
+        seller_products = defaultdict(list)
+
         for detail in details:
+            seller_products[detail.product.seller].append(
+                detail.product.name
+            )
+
+        for seller, products in seller_products.items():
             Notification.objects.create(
-                user=detail.product.seller,
-                message=f"Order #{order.id} Your product '{detail.product.name}' was sold ."
+                user=seller,
+                message=f"Order #{order.id} contains {len(products)} of your products."
             )
 
         return redirect('order_detail', id=order.id)
