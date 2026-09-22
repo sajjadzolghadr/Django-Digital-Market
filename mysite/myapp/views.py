@@ -16,6 +16,8 @@ def index(request):
     min_price = request.GET.get('min_price', '')
     max_price = request.GET.get('max_price', '')
     products = Product.objects.select_related('seller').all()
+    if request.user.is_authenticated and request.user.groups.filter(name='seller').exists():
+        products = products.filter(seller=request.user)
 
     if min_price:
         products = products.filter(price__gte=min_price)
@@ -47,6 +49,14 @@ def index(request):
     latest_product = Product.objects.order_by('-id').first()
     latest_order = Order.objects.order_by('-id').first()
     latest_user = User.objects.order_by('-id').first()
+    if request.user.is_authenticated and request.user.groups.filter(name='seller').exists():
+        for product in products:
+            product.sold_quantity = OrderDetail.objects.filter(
+                product=product,
+                has_paid=True
+            ).aggregate(
+                total=Sum('quantity')
+            )['total'] or 0
     return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers,'seller_products': seller_products,'seller_orders': seller_orders,'query': query,'sort': sort,'min_price': min_price,'max_price': max_price})
 
 @login_required
