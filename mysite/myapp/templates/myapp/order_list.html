@@ -9,6 +9,7 @@
 {% for order in orders %}
 <div class="card p-3 mb-2">
     <h5>Order #{{ order.id }}</h5>
+    <p>Items: {{ order.item_count }}</p>
 
     {% if order.details.all.0.has_paid %}
         <span class="badge bg-success">Paid</span>

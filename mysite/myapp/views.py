@@ -92,6 +92,11 @@ def orders_list(request):
     orders = Order.objects.filter(
         customer__user=request.user
     ).prefetch_related('details').order_by('-created_at')
+    for order in orders:
+        order.item_count = sum(
+            detail.quantity
+            for detail in order.details.all()
+        )
 
     return render(request, 'myapp/order_list.html', {
         'orders': orders
