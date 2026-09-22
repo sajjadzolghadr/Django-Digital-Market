@@ -97,6 +97,10 @@ def orders_list(request):
             detail.quantity
             for detail in order.details.all()
         )
+        order.total = sum(
+            detail.amount
+            for detail in order.details.all()
+        )
 
     return render(request, 'myapp/order_list.html', {
         'orders': orders
