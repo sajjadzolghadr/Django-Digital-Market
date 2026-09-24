@@ -13,7 +13,11 @@
 
     {% for detail in order.details.all %}
         {% if detail.product.seller == request.user and detail.has_paid %}
-            <p>{{ detail.product.name }} - ${{ detail.amount }}</p>
+           <p>
+    {{ detail.product.name }}
+    × {{ detail.quantity }}
+    - ${{ detail.amount|floatformat:2 }}
+</p>
         {% endif %}
     {% endfor %}
 
