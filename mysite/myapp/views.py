@@ -57,6 +57,13 @@ def index(request):
             ).aggregate(
                 total=Sum('quantity')
             )['total'] or 0
+
+            product.sold_revenue = OrderDetail.objects.filter(
+                product=product,
+                has_paid=True
+            ).aggregate(
+                total=Sum('amount')
+            )['total'] or 0
     return render(request, 'myapp/index.html', {'products': products,'orders': orders,'total_sales': total_sales,'latest_product': latest_product, 'latest_order': latest_order, 'latest_user': latest_user,'customers': customers,'seller_products': seller_products,'seller_orders': seller_orders,'query': query,'sort': sort,'min_price': min_price,'max_price': max_price})
 
 @login_required
