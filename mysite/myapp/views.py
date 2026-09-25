@@ -9,6 +9,8 @@ from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from collections import defaultdict
+from django.utils import timezone
+from datetime import timedelta
 # Create your views here.
 def index(request):
     query = request.GET.get('q', '')
@@ -318,10 +320,33 @@ def sales_history(request):
     if not request.user.groups.filter(name='seller').exists():
         return redirect('invalid')
 
+    period = request.GET.get('period', 'all')
+
     orders = Order.objects.filter(
         details__product__seller=request.user,
         details__has_paid=True
-    ).distinct().prefetch_related('details__product').order_by('-created_at')
+    ).distinct()
+
+    now = timezone.now()
+
+    if period == 'today':
+        orders = orders.filter(
+            created_at__date=timezone.localdate()
+        )
+
+    elif period == 'week':
+        orders = orders.filter(
+            created_at__gte=now - timedelta(days=7)
+        )
+
+    elif period == 'month':
+        orders = orders.filter(
+            created_at__gte=now - timedelta(days=30)
+        )
+
+    orders = orders.prefetch_related(
+        'details__product'
+    ).order_by('-created_at')
 
     for order in orders:
         order.seller_total = sum(
@@ -332,7 +357,7 @@ def sales_history(request):
         )
 
     return render(request, 'myapp/sales_history.html', {
-        'orders': orders
+        'orders': orders,'period': period
     })
 
 @login_required

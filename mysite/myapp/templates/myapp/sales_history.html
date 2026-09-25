@@ -5,7 +5,31 @@
 {% block content %}
 
 <h3>Sales History</h3>
+<form method="get" class="mb-4">
+    <div class="d-flex gap-2">
+        <select name="period" class="form-select">
+            <option value="all" {% if period == 'all' %}selected{% endif %}>
+                All
+            </option>
 
+            <option value="today" {% if period == 'today' %}selected{% endif %}>
+                Today
+            </option>
+
+            <option value="week" {% if period == 'week' %}selected{% endif %}>
+                Last 7 Days
+            </option>
+
+            <option value="month" {% if period == 'month' %}selected{% endif %}>
+                Last 30 Days
+            </option>
+        </select>
+
+        <button class="btn btn-primary">
+            Filter
+        </button>
+    </div>
+</form>
 {% for order in orders %}
 <div class="card p-3 mb-2">
     <b>Order #{{ order.id }}</b>
