@@ -323,11 +323,18 @@ def sales_history(request):
     period = request.GET.get('period', 'all')
     start_date = request.GET.get('start_date', '')
     end_date = request.GET.get('end_date', '')
+    search = request.GET.get('search', '')
 
     orders = Order.objects.filter(
         details__product__seller=request.user,
         details__has_paid=True
     ).distinct()
+
+    if search:
+        orders = orders.filter(
+            Q(details__product__name__icontains=search) |
+            Q(customer__user__username__icontains=search)
+        ).distinct()
 
     now = timezone.now()
 
@@ -370,7 +377,7 @@ def sales_history(request):
 
     return render(request, 'myapp/sales_history.html', {
         'orders': orders,'period': period , 'start_date': start_date,
-'end_date': end_date,
+'end_date': end_date,'search': search,
     })
 
 @login_required
