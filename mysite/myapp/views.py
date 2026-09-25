@@ -321,6 +321,8 @@ def sales_history(request):
         return redirect('invalid')
 
     period = request.GET.get('period', 'all')
+    start_date = request.GET.get('start_date', '')
+    end_date = request.GET.get('end_date', '')
 
     orders = Order.objects.filter(
         details__product__seller=request.user,
@@ -344,6 +346,16 @@ def sales_history(request):
             created_at__gte=now - timedelta(days=30)
         )
 
+    if start_date:
+        orders = orders.filter(
+            created_at__date__gte=start_date
+        )
+
+    if end_date:
+        orders = orders.filter(
+            created_at__date__lte=end_date
+        )
+
     orders = orders.prefetch_related(
         'details__product'
     ).order_by('-created_at')
@@ -357,7 +369,8 @@ def sales_history(request):
         )
 
     return render(request, 'myapp/sales_history.html', {
-        'orders': orders,'period': period
+        'orders': orders,'period': period , 'start_date': start_date,
+'end_date': end_date,
     })
 
 @login_required

@@ -6,6 +6,7 @@
 
 <h3>Sales History</h3>
 <form method="get" class="mb-4">
+
     <div class="d-flex gap-2">
         <select name="period" class="form-select">
             <option value="all" {% if period == 'all' %}selected{% endif %}>
@@ -25,10 +26,21 @@
             </option>
         </select>
 
-        <button class="btn btn-primary">
-            Filter
+        <input type="date"
+               name="start_date"
+               value="{{ start_date }}"
+               class="form-control">
+
+        <input type="date"
+               name="end_date"
+               value="{{ end_date }}"
+               class="form-control">
+
+        <button type="submit" class="btn btn-primary">
+            Apply
         </button>
     </div>
+
 </form>
 {% for order in orders %}
 <div class="card p-3 mb-2">
