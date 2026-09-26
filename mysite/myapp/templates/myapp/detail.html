@@ -73,6 +73,12 @@
     <p>⭐ {{ review.rating }}/5</p>
     <p>{{ review.comment }}</p>
 </div>
+                    {% if review.customer.user == request.user %}
+    <a href="{% url 'edit_review' review.id %}"
+       class="btn btn-outline-primary">
+        Edit
+    </a>
+{% endif %}
 {% empty %}
 <p>No reviews yet.</p>
 {% endfor %}
