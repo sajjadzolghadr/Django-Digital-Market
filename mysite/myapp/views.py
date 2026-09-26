@@ -565,3 +565,31 @@ def remove_from_cart(request, id):
     purchase.delete()
 
     return redirect('my_purchases')
+
+@login_required
+def edit_review(request, id):
+    customer = get_object_or_404(Customer, user=request.user)
+
+    review = get_object_or_404(
+        Review,
+        id=id,
+        customer=customer
+    )
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=review)
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                'Your review was updated successfully.'
+            )
+            return redirect('detail', id=review.product.id)
+    else:
+        form = ReviewForm(instance=review)
+
+    return render(request, 'myapp/edit_review.html', {
+        'form': form,
+        'review': review
+    })
