@@ -5,7 +5,18 @@
 {% block content %}
 
 <h3>Notifications</h3>
+{% if unread_notifications %}
+<form method="post"
+      action="{% url 'mark_all_notifications_read' %}"
+      class="mb-3">
+    {% csrf_token %}
 
+    <button type="submit" class="btn btn-outline-primary">
+        <i class="fas fa-check-double"></i>
+        Mark All as Read
+    </button>
+</form>
+{% endif %}
 {% for notification in notifications %}
 <div class="alert {% if notification.is_read %}alert-secondary{% else %}alert-info{% endif %}">
     {{ notification.message }}
