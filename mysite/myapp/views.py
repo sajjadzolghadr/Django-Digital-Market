@@ -617,3 +617,14 @@ def delete_review(request, id):
     return render(request, 'myapp/delete_review.html', {
         'review': review
     })
+
+
+@login_required
+def mark_all_notifications_read(request):
+    if request.method == 'POST':
+        Notification.objects.filter(
+            user=request.user,
+            is_read=False
+        ).update(is_read=True)
+
+    return redirect('notifications')

@@ -34,4 +34,5 @@ urlpatterns = [
     path('cart/remove/<int:id>/',views.remove_from_cart,name='remove_from_cart'),
     path('review/<int:id>/edit/',views.edit_review,name='edit_review'),
     path('review/<int:id>/delete/',views.delete_review,name='delete_review'),
+    path('notifications/read-all/',views.mark_all_notifications_read,name='mark_all_notifications_read'),
 ]
