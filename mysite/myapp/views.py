@@ -11,6 +11,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from collections import defaultdict
 from django.utils import timezone
 from datetime import timedelta
+from django.core.paginator import Paginator
 # Create your views here.
 def index(request):
     query = request.GET.get('q', '')
@@ -366,6 +367,12 @@ def sales_history(request):
     orders = orders.prefetch_related(
         'details__product'
     ).order_by('-created_at')
+
+    paginator = Paginator(orders, 10)
+
+    page_number = request.GET.get('page')
+
+    orders = paginator.get_page(page_number)
 
     for order in orders:
         order.seller_total = sum(
