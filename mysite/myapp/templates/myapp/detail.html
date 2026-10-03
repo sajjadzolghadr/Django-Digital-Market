@@ -78,6 +78,10 @@
        class="btn btn-outline-primary">
         Edit
     </a>
+          <a href="{% url 'delete_review' review.id %}"
+       class="btn btn-outline-danger">
+        Delete
+    </a>
 {% endif %}
 {% empty %}
 <p>No reviews yet.</p>
