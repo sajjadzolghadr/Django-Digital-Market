@@ -116,6 +116,13 @@
             <div class="card-body">
               <h6 class="card-title fw-bold">{{ product.name }}</h6>
               <p class="card-text small text-muted">{{ product.description|truncatechars:60 }}</p>
+                {% if product.category %}
+    <span class="badge bg-info text-dark">
+        <i class="fas fa-tag"></i>
+        {{ product.category.name }}
+    </span>
+{% endif %}
+                <br>
                 <h8 class="card-title fw-bold">Seller: {{ product.seller}}</h8>
                 {% if is_seller %}
     <span class="badge bg-light text-dark border">
