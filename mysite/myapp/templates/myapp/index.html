@@ -148,7 +148,7 @@
       <i class="fas fa-eye"></i> View
     </span>
   </a>
-
+{% if is_seller %}
   <a href="{% url 'editproduct' product.id %}" class="text-decoration-none">
     <span class="badge bg-success">
       <i class="fas fa-edit"></i> Edit
@@ -157,6 +157,7 @@
    <a href="{% url 'deleteproduct' product.id %}">
     <span class="badge bg-danger"><i class="fas fa-trash"></i> Delete</span>
   </a>
+                  {% endif %}
 </div>
               </div>
             </div>
