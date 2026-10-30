@@ -48,7 +48,14 @@ def index(request):
     if request.user.is_authenticated and request.user.groups.filter(name='seller').exists():
         seller_products = Product.objects.filter(seller=request.user)
         seller_orders = Order.objects.filter(details__product__seller=request.user).distinct()
-    total_sales = OrderDetail.objects.filter(product__seller=request.user,has_paid=True).aggregate(total=Sum('amount'))['total'] or 0
+
+    if request.user.is_authenticated:
+        total_sales = OrderDetail.objects.filter(
+            product__seller=request.user,
+            has_paid=True
+        ).aggregate(total=Sum('amount'))['total'] or 0
+    else:
+        total_sales = 0
     latest_product = Product.objects.order_by('-id').first()
     latest_order = Order.objects.order_by('-id').first()
     latest_user = User.objects.order_by('-id').first()

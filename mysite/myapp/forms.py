@@ -23,12 +23,21 @@ class ProductForm(forms.ModelForm):
             }),
             'price': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Price'
+                'placeholder': 'Price',
+                'min': '0',
             }),
             'file': forms.FileInput(attrs={
                 'class': 'form-control'
             }),
         }
+
+        def clean_price(self):
+            price = self.cleaned_data['price']
+
+            if price < 0:
+                raise forms.ValidationError('Price cannot be negative.')
+
+            return price
 
 class RegisterForm(forms.ModelForm):
     ROLE_CHOICES = [
