@@ -13,6 +13,12 @@
 
       <button class="btn btn-success w-100">Login</button>
     </form>
+    <div class="text-center mt-3">
+    <a href="{% url 'password_reset' %}"
+       class="text-decoration-none">
+        Forgot your password?
+    </a>
+</div>
       <p class="text-center mt-3">
   Don't have an account?
   <a href="{% url 'register' %}">Register now</a>
