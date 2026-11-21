@@ -7,7 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price','category', 'file']
+        fields = ['name', 'description', 'price','category','stock', 'file']
         widgets = {
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -28,6 +28,12 @@ class ProductForm(forms.ModelForm):
             }),
             'file': forms.FileInput(attrs={
                 'class': 'form-control'
+            }),
+            'stock': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Available quantity',
+                'min': '0',
+                'step': '1'
             }),
         }
 
