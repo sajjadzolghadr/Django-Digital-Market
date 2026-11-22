@@ -101,87 +101,160 @@
         </button>
     </div>
 </form>
+
+
 <div class="col-12">
-  <div class="card card-shadow p-4">
-    <h5><i class="fas fa-box me-2"></i>Products</h5>
-    <div class="row g-3 mt-2">
-      {% for product in products %}
-      <div class="col-md-4 col-sm-6">
-          <div class="card h-100 card-shadow hover-card">
-            {% if product.file %}
-            <div class="text-center p-3 bg-light">
-              <i class="fas fa-file-alt fa-3x text-primary"></i>
-            </div>
-            {% endif %}
-            <div class="card-body">
-              <h6 class="card-title fw-bold">{{ product.name }}</h6>
-              <p class="card-text small text-muted">{{ product.description|truncatechars:60 }}</p>
-                {% if product.category %}
-    <span class="badge bg-info text-dark">
-        <i class="fas fa-tag"></i>
-        {{ product.category.name }}
+    <div class="card card-shadow p-4">
+        <h5><i class="fas fa-box me-2"></i>Products</h5>
+
+        <div class="row g-3 mt-2">
+
+            {% for product in products %}
+
+            <div class="col-md-4 col-sm-6">
+
+                <div class="card h-100 card-shadow hover-card">
+
+                    {% if product.file %}
+                    <div class="text-center p-3 bg-light">
+                        <i class="fas fa-file-alt fa-3x text-primary"></i>
+                    </div>
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">
+
+                        <h6 class="card-title fw-bold">
+                            {{ product.name }}
+                        </h6>
+
+                        <p class="card-text small text-muted">
+                            {{ product.description|truncatechars:60 }}
+                        </p>
+
+                        {% if product.category %}
+                        <div class="mb-2">
+                            <span class="badge bg-info text-dark">
+                                <i class="fas fa-tag"></i>
+                                {{ product.category.name }}
+                            </span>
+                        </div>
+                        {% endif %}
+
+                        <p class="small mb-2">
+                            <strong>Seller:</strong> {{ product.seller }}
+                        </p>
+
+                        {% if is_seller %}
+                        <div class="mb-3 d-flex flex-wrap gap-2">
+
+                            <span class="badge bg-light text-dark border">
+                                <i class="fas fa-chart-line text-success me-1"></i>
+                                {{ product.sold_quantity }} Sold
+                            </span>
+
+                            <span class="badge bg-light text-dark border">
+                                <i class="fas fa-dollar-sign text-success me-1"></i>
+                                ${{ product.sold_revenue|floatformat:2 }} Revenue
+                            </span>
+
+                            <span class="badge bg-light text-dark border">
+                                {% if product.stock > 0 %}
+                                    <i class="fas fa-box text-success me-1"></i>
+                                    {{ product.stock }} In Stock
+                                {% else %}
+                                    <i class="fas fa-times-circle text-danger me-1"></i>
+                                    Out of Stock
+                                {% endif %}
+                            </span>
+
+                        </div>
+                        {% endif %}
+
+                        <div class="d-flex justify-content-between align-items-center mb-3 mt-auto">
+
+                            <span class="h5 text-success fw-bold mb-0">
+        ${{ product.price }}
     </span>
+
+    <a href="{% url 'detail' product.id %}" class="text-decoration-none">
+        <span class="badge bg-primary">
+            <i class="fas fa-eye"></i> View
+        </span>
+    </a>
+
+                            {% if is_seller %}
+    <a href="{% url 'editproduct' product.id %}" class="text-decoration-none">
+        <span class="badge bg-success">
+            <i class="fas fa-edit"></i> Edit
+        </span>
+    </a>
+
+    <a href="{% url 'deleteproduct' product.id %}">
+        <span class="badge bg-danger">
+            <i class="fas fa-trash"></i> Delete
+        </span>
+    </a>
 {% endif %}
-                <h8 class="card-title fw-bold">Seller: {{ product.seller}}</h8>
-                <br>
 
-                {% if is_seller %}
-    <span class="badge bg-light text-dark border">
-        <i class="fas fa-chart-line text-success me-1"></i>
-        {{ product.sold_quantity }} Sold
-    </span>
-                <span class="badge bg-light text-dark border">
-        <i class="fas fa-dollar-sign text-success me-1"></i>
-        ${{ product.sold_revenue|floatformat:2 }} Revenue
-    </span>
-                <span class="badge bg-light text-dark border">
-    {% if product.stock > 0 %}
-        <i class="fas fa-box text-success me-1"></i>
-        {{ product.stock }} In Stock
-    {% else %}
-        <i class="fas fa-times-circle text-danger me-1"></i>
-        Out of Stock
-    {% endif %}
-</span>
-{% endif %}
-              <div class="d-flex justify-content-between align-items-center">
-                <span class="h5 text-success mb-0">${{ product.price }}</span>
-              <div class="d-flex gap-2">
+                        </div>
 
 
-              <a href="{% url 'add_to_cart' product.id %}" class="text-decoration-none">
-  <span class="badge bg-success">
-    <i class="fas fa-cart-plus"></i> Add to Cart
-  </span>
-</a>
-  <a href="{% url 'detail' product.id %}" class="text-decoration-none">
-    <span class="badge bg-primary">
-      <i class="fas fa-eye"></i> View
-    </span>
-  </a>
-{% if is_seller %}
-  <a href="{% url 'editproduct' product.id %}" class="text-decoration-none">
-    <span class="badge bg-success">
-      <i class="fas fa-edit"></i> Edit
-    </span>
-  </a>
-   <a href="{% url 'deleteproduct' product.id %}">
-    <span class="badge bg-danger"><i class="fas fa-trash"></i> Delete</span>
-  </a>
-                  {% endif %}
-</div>
-              </div>
+
+                        <form method="POST" action="{% url 'add_to_cart' product.id %}">
+                            {% csrf_token %}
+
+                            <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+
+                                <button type="button"
+                                        class="btn btn-light border rounded-circle"
+                                        style="width: 38px; height: 38px;"
+                                        onclick="changeQuantity(this, -1)">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+
+                                <input type="number"
+                                       name="quantity"
+                                       class="form-control text-center fw-bold"
+                                       value="1"
+                                       min="1"
+                                       max="{{ product.stock }}"
+                                       style="width: 70px;"
+                                       required>
+
+                                <button type="button"
+                                        class="btn btn-light border rounded-circle"
+                                        style="width: 38px; height: 38px;"
+                                        onclick="changeQuantity(this, 1)">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+
+                            </div>
+
+                            <button type="submit"
+                                    class="btn btn-primary w-100 rounded-pill"
+                                    {% if product.stock <= 0 %}disabled{% endif %}>
+                                <i class="fas fa-cart-plus me-2"></i>
+                                Add to Cart
+                            </button>
+                        </form>
+
+                    </div>
+                </div>
+
             </div>
-          </div>
-        </a>
-      </div>
-      {% empty %}
-      <div class="col-12">
-        <p class="text-muted text-center">No products available.</p>
-      </div>
-      {% endfor %}
+
+            {% empty %}
+
+            <div class="col-12">
+                <p class="text-muted text-center">
+                    No products available.
+                </p>
+            </div>
+
+            {% endfor %}
+
+        </div>
     </div>
-  </div>
 </div>
 {% if is_seller %}
   <!-- Recent Activity -->
