@@ -19,6 +19,49 @@
     .card-shadow{border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,0.05);transition:0.3s;border:none}
     .card-shadow:hover{transform:translateY(-5px);box-shadow:0 15px 40px rgba(0,0,0,0.1)}
     footer{background:#0d1b2a;color:rgba(255,255,255,0.6);padding:20px 0;margin-top:40px;text-align:center;border-top:1px solid rgba(255,255,255,0.05)}
+    .message-container {
+    max-width: 900px;
+    margin: 25px auto 0;
+    padding: 0 15px;
+}
+
+.custom-alert {
+    border: none;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    animation: slideDown 0.4s ease;
+}
+
+.custom-alert.alert-danger {
+    background: #fff0f0;
+    color: #b02a37;
+    border-left: 5px solid #dc3545;
+}
+
+.custom-alert.alert-success {
+    background: #edfff3;
+    color: #146c43;
+    border-left: 5px solid #198754;
+}
+
+.custom-alert i {
+    font-size: 22px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
   </style>
   {% block extra_css %}{% endblock %}
 </head>
@@ -145,11 +188,38 @@
 </nav>
      </div>
         {% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-    {% endfor %}
+    <div class="message-container">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} custom-alert alert-dismissible fade show"
+                 role="alert">
+
+                {% if message.tags == 'error' %}
+                    <i class="fas fa-exclamation-circle"></i>
+                {% elif message.tags == 'success' %}
+                    <i class="fas fa-check-circle"></i>
+                {% else %}
+                    <i class="fas fa-info-circle"></i>
+                {% endif %}
+
+                <div class="flex-grow-1">
+                    <strong>
+                        {% if message.tags == 'error' %}
+                            Something went wrong!
+                        {% elif message.tags == 'success' %}
+                            Success!
+                        {% else %}
+                            Notice
+                        {% endif %}
+                    </strong>
+                    <div>{{ message }}</div>
+                </div>
+
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    </div>
 {% endif %}
   <div class="main-content">
     <div class="container">{% block content %}{% endblock %}</div>

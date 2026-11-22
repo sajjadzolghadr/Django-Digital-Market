@@ -193,6 +193,12 @@ def invalid(request):
 @login_required
 def add_to_cart(request, id):
     product = Product.objects.get(id=id)
+    if product.stock <= 0:
+        messages.error(
+            request,
+            'Sorry, this product is currently out of stock and cannot be added to your cart.'
+        )
+        return redirect('index')
 
     purchase, created = Purchase.objects.get_or_create(
         user=request.user,
