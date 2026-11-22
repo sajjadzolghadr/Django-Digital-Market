@@ -122,8 +122,9 @@
         {{ product.category.name }}
     </span>
 {% endif %}
-                <br>
                 <h8 class="card-title fw-bold">Seller: {{ product.seller}}</h8>
+                <br>
+
                 {% if is_seller %}
     <span class="badge bg-light text-dark border">
         <i class="fas fa-chart-line text-success me-1"></i>
@@ -133,10 +134,15 @@
         <i class="fas fa-dollar-sign text-success me-1"></i>
         ${{ product.sold_revenue|floatformat:2 }} Revenue
     </span>
+                <span class="badge bg-light text-dark border">
+    <i class="fas fa-box text-primary me-1"></i>
+    {{ product.stock }} In Stock
+</span>
 {% endif %}
               <div class="d-flex justify-content-between align-items-center">
                 <span class="h5 text-success mb-0">${{ product.price }}</span>
               <div class="d-flex gap-2">
+
 
               <a href="{% url 'add_to_cart' product.id %}" class="text-decoration-none">
   <span class="badge bg-success">
