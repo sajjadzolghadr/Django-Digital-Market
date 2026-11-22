@@ -40,6 +40,19 @@
               <h4 class="text-success fw-bold mb-0">${{ product.price }}</h4>
             </div>
           </div>
+            <div class="mb-3">
+    <strong>Available Stock:</strong>
+
+    {% if product.stock > 0 %}
+        <span class="text-success">
+            {{ product.stock }} available
+        </span>
+    {% else %}
+        <span class="text-danger">
+            Out of Stock
+        </span>
+    {% endif %}
+</div>
           <div class="col-md-6">
             <div class="p-2 bg-light rounded-2">
               <small class="text-muted fw-bold">File</small>
