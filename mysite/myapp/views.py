@@ -606,8 +606,14 @@ def increase_quantity(request, id):
         user=request.user
     )
 
-    purchase.quantity += 1
-    purchase.save()
+    if purchase.quantity < purchase.product.stock:
+        purchase.quantity += 1
+        purchase.save()
+    else:
+        messages.error(
+            request,
+            f'Only {purchase.product.stock} units are available in stock.'
+        )
 
     return redirect('my_purchases')
 
