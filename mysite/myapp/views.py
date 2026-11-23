@@ -12,6 +12,7 @@ from collections import defaultdict
 from django.utils import timezone
 from datetime import timedelta
 from django.core.paginator import Paginator
+from django.db import transaction
 # Create your views here.
 def index(request):
     query = request.GET.get('q', '')
@@ -287,45 +288,70 @@ def submit_order(request):
 
 @login_required
 def pay_order(request, id):
-    order = get_object_or_404(
-        Order,
-        id=id,
-        customer__user=request.user
-    )
+    if request.method != 'POST':
+        return redirect('order_detail', id=id)
 
-    if request.method == 'POST':
-        OrderDetail.objects.filter(order=order).update(
-            has_paid=True
-        )
-        total = sum(
-            detail.amount
-            for detail in OrderDetail.objects.filter(order=order)
-        )
-
-        Notification.objects.create(
-            user=request.user,
-            message=f"Order #{order.id} was paid successfully. Total: ${total:.2f}"
-        )
-        details = OrderDetail.objects.filter(
-            order=order
-        ).select_related('product__seller')
-
-        seller_products = defaultdict(list)
-
-        for detail in details:
-            seller_products[detail.product.seller].append(
-                detail.product.name
+    try:
+        with transaction.atomic():
+            order = get_object_or_404(
+                Order.objects.select_for_update(),
+                id=id,
+                customer__user=request.user
             )
 
-        for seller, products in seller_products.items():
+            details = list(
+                OrderDetail.objects.filter(
+                    order=order,
+                    has_paid=False
+                ).select_for_update().order_by('product_id')
+            )
+
+            if not details:
+                return redirect('order_detail', id=order.id)
+
+            # Check stock availability before processing payment
+            for detail in details:
+                product = Product.objects.select_for_update().get(
+                    id=detail.product_id
+                )
+
+                if product.stock < detail.quantity:
+                    raise ValueError(
+                        f'Not enough stock for "{product.name}". '
+                        f'Available: {product.stock}, '
+                        f'Requested: {detail.quantity}.'
+                    )
+
+                product.stock -= detail.quantity
+                product.save(update_fields=['stock'])
+
+                detail.has_paid = True
+                detail.save(update_fields=['has_paid'])
+
+            total = sum(detail.amount for detail in details)
+
             Notification.objects.create(
-                user=seller,
-                message=f"Order #{order.id} contains {len(products)} of your products."
+                user=request.user,
+                message=f"Order #{order.id} was paid successfully. Total: ${total:.2f}"
             )
 
-        return redirect('order_detail', id=order.id)
+            seller_products = defaultdict(list)
 
-    return redirect('order_detail', id=order.id)
+            for detail in details:
+                seller_products[detail.product.seller].append(
+                    detail.product.name
+                )
+
+            for seller, products in seller_products.items():
+                Notification.objects.create(
+                    user=seller,
+                    message=f"Order #{order.id} contains {len(products)} of your products."
+                )
+
+    except ValueError as error:
+        messages.error(request, str(error))
+
+    return redirect('order_detail', id=id)
 
 @login_required
 def download_product(request, id):
