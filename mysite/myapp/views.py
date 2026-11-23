@@ -192,24 +192,52 @@ def invalid(request):
 
 @login_required
 def add_to_cart(request, id):
-    product = Product.objects.get(id=id)
+    product = get_object_or_404(Product, id=id)
+
+    if request.method != 'POST':
+        return redirect('index')
+
+    try:
+        quantity = int(request.POST.get('quantity', 1))
+    except (ValueError, TypeError):
+        messages.error(request, 'Please enter a valid quantity.')
+        return redirect('index')
+
+    if quantity < 1:
+        messages.error(request, 'Quantity must be at least 1.')
+        return redirect('index')
+
     if product.stock <= 0:
+        messages.error(request, 'Sorry, this product is currently out of stock.')
+        return redirect('index')
+
+    purchase = Purchase.objects.filter(
+        user=request.user,
+        product=product
+    ).first()
+
+    current_quantity = purchase.quantity if purchase else 0
+    new_quantity = current_quantity + quantity
+
+    if new_quantity > product.stock:
         messages.error(
             request,
-            'Sorry, this product is currently out of stock and cannot be added to your cart.'
+            f'Only {product.stock} units are available. You already have {current_quantity} in your cart.'
         )
         return redirect('index')
 
-    purchase, created = Purchase.objects.get_or_create(
-        user=request.user,
-        product=product
-    )
-    if not created:
-        purchase.quantity += 1
+    if purchase:
+        purchase.quantity = new_quantity
         purchase.save()
+    else:
+        Purchase.objects.create(
+            user=request.user,
+            product=product,
+            quantity=quantity
+        )
 
+    messages.success(request, 'Product added to your cart successfully.')
     return redirect('index')
-
 @login_required
 def my_purchases(request):
     purchases = Purchase.objects.filter(
