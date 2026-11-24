@@ -265,6 +265,15 @@ def submit_order(request):
         customer = get_object_or_404(Customer,user=request.user)
 
         if purchases.exists():
+            for purchase in purchases.select_related('product'):
+                if purchase.quantity > purchase.product.stock:
+                    messages.error(
+                        request,
+                        f'Not enough stock for "{purchase.product.name}". '
+                        f'Available: {purchase.product.stock}, '
+                        f'Requested: {purchase.quantity}.'
+                    )
+                    return redirect('my_purchases')
             order = Order.objects.create(customer=customer)
 
             for purchase in purchases:
