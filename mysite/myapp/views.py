@@ -325,6 +325,15 @@ def pay_order(request, id):
                 product.stock -= detail.quantity
                 product.save(update_fields=['stock'])
 
+                if product.stock <= 3:
+                    Notification.objects.create(
+                        user=product.seller,
+                        message=(
+                            f'Low stock alert: "{product.name}" '
+                            f'has only {product.stock} units left.'
+                        )
+                    )
+
                 detail.has_paid = True
                 detail.save(update_fields=['has_paid'])
 
