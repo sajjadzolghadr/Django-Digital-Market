@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Sum , Q,Avg
 from django.shortcuts import render,get_object_or_404,redirect
-from .forms import ProductForm, RegisterForm, ReviewForm, ProfileForm
+from .forms import ProductForm, RegisterForm, ReviewForm, ProfileForm , CategoryForm
 from .models import Product, OrderDetail, Purchase, Order, Customer, Wishlist, Review, Notification
 from django.http import FileResponse
 from django.contrib import messages
@@ -726,3 +726,28 @@ def mark_all_notifications_read(request):
         ).update(is_read=True)
 
     return redirect('notifications')
+
+@login_required
+def create_category(request):
+    if not request.user.groups.filter(name='seller').exists():
+        return redirect('invalid')
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request,
+                'Category created successfully.'
+            )
+            return redirect('index')
+
+    else:
+        form = CategoryForm()
+
+    return render(
+        request,
+        'myapp/create_category.html',
+        {'form': form}
+    )
