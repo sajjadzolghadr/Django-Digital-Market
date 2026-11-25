@@ -295,6 +295,34 @@ def submit_order(request):
 
     return redirect('my_purchases')
 
+
+@login_required
+def delete_order(request, id):
+    order = get_object_or_404(
+        Order,
+        id=id,
+        customer__user=request.user
+    )
+
+    if request.method == 'POST':
+        if order.details.filter(has_paid=True).exists():
+            messages.error(
+                request,
+                'Paid orders cannot be deleted.'
+            )
+            return redirect('orders_list')
+
+        order.delete()
+
+        messages.success(
+            request,
+            'Order deleted successfully.'
+        )
+
+        return redirect('orders_list')
+
+    return redirect('orders_list')
+
 @login_required
 def pay_order(request, id):
     if request.method != 'POST':
