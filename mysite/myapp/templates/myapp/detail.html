@@ -65,7 +65,11 @@
           <div class="col-md-6">
             <div class="p-2 bg-light rounded-2">
               <small class="text-muted fw-bold">Status</small>
-              <p class="mb-0"><span class="badge bg-success">Available</span></p>
+                {% if product.stock > 0 %}
+                <p class="mb-0"><span class="badge bg-success">In Stock</span></p>
+                {% else %}
+                   <p class="mb-0"><span class="badge bg-danger">Out of Stock</span></p>
+                 {% endif %}
             </div>
           </div>
         </div>
