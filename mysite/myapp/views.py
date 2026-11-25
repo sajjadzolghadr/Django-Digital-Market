@@ -421,7 +421,7 @@ def download_product(request, id):
 
 @login_required
 def my_downloads(request):
-    if not request.user.groups.filter(name='customer').exists():
+    if request.user.groups.filter(name='seller').exists():
         return redirect('invalid')
     downloads = OrderDetail.objects.filter(
         order__customer__user=request.user,
@@ -516,7 +516,7 @@ def add_to_wishlist(request, id):
 
 @login_required
 def my_wishlist(request):
-    if not request.user.groups.filter(name='customer').exists():
+    if request.user.groups.filter(name='seller').exists():
         return redirect('invalid')
     customer = get_object_or_404(
         Customer,
