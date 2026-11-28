@@ -244,13 +244,21 @@ input[name="quantity"] {
 <script>
 function changeQuantity(button, change) {
     const input = button.parentElement.querySelector('input[name="quantity"]');
-    const min = parseInt(input.min) || 1;
-    const max = parseInt(input.max) || 1;
 
-    let value = parseInt(input.value) || 1;
-    value += change;
+    let currentValue = parseInt(input.value) || 0;
+    const maxValue = parseInt(input.max);
 
-    input.value = Math.max(min, Math.min(value, max));
+    let newValue = currentValue + change;
+
+    if (newValue < 0) {
+        newValue = 0;
+    }
+
+    if (newValue > maxValue) {
+        newValue = maxValue;
+    }
+
+    input.value = newValue;
 }
 </script>
 </body>
