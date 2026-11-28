@@ -13,6 +13,7 @@ class Product(models.Model):
     description = models.CharField(max_length=500)
     price = models.FloatField()
     category = models.ForeignKey(Category,on_delete=models.SET_NULL,null=True,blank=True)
+    image = models.ImageField(upload_to='product_images/',null=True,blank=True)
     file = models.FileField(upload_to='uploads')
     stock = models.PositiveIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
